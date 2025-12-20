@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure DevOps Pipeline - Architecture Diagram</title>
+    <title>Secure DevOps Pipeline - Direct K8s Deployment</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
@@ -66,7 +66,6 @@
             background-size: 40px 40px;
         }
 
-        /* Node styles */
         .node {
             position: absolute;
             display: flex;
@@ -106,75 +105,6 @@
             margin-top: 2px;
         }
 
-        /* Animated arrows */
-        .arrow-path {
-            position: absolute;
-            z-index: 5;
-        }
-
-        .arrow-line {
-            stroke: #374151;
-            stroke-width: 2;
-            stroke-dasharray: 8, 4;
-            fill: none;
-        }
-
-        .arrow-dot {
-            r: 5;
-            filter: drop-shadow(0 0 6px currentColor);
-        }
-
-        .arrow-head {
-            fill: currentColor;
-        }
-
-        /* Flow animations */
-        @keyframes flowDot {
-            0% { offset-distance: 0%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { offset-distance: 100%; opacity: 0; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 5px currentColor; }
-            50% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
-        }
-
-        .node.active {
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        /* Cloud regions */
-        .cloud-region {
-            position: absolute;
-            border-radius: 20px;
-            border: 2px dashed;
-            z-index: 1;
-        }
-
-        .cloud-region .region-label {
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .cloud-region .region-label img {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* Security gate */
         .security-gate {
             position: absolute;
             background: rgba(30, 30, 46, 0.95);
@@ -222,8 +152,7 @@
             font-size: 8px;
         }
 
-        /* EKS Cluster */
-        .eks-cluster {
+        .k8s-cluster {
             position: absolute;
             background: rgba(50, 108, 229, 0.08);
             border: 2px dashed #326CE5;
@@ -231,7 +160,7 @@
             z-index: 2;
         }
 
-        .eks-cluster .cluster-label {
+        .k8s-cluster .cluster-label {
             position: absolute;
             top: 8px;
             left: 12px;
@@ -243,7 +172,7 @@
             gap: 6px;
         }
 
-        .eks-cluster .cluster-label img {
+        .k8s-cluster .cluster-label img {
             width: 20px;
             height: 20px;
         }
@@ -286,7 +215,6 @@
             height: 16px;
         }
 
-        /* Legend */
         .legend {
             display: flex;
             justify-content: center;
@@ -312,7 +240,6 @@
             font-size: 11px;
         }
 
-        /* Tech stack footer */
         .tech-stack {
             margin-top: 25px;
             padding: 20px;
@@ -363,7 +290,6 @@
             font-size: 11px;
         }
 
-        /* SVG Arrows */
         svg.arrows {
             position: absolute;
             top: 0;
@@ -374,13 +300,6 @@
             pointer-events: none;
         }
 
-        .flow-dot {
-            offset-path: path(var(--path));
-            animation: flowDot var(--duration, 2s) linear infinite;
-            animation-delay: var(--delay, 0s);
-        }
-
-        /* Stage indicator */
         .stage-indicator {
             display: flex;
             justify-content: center;
@@ -404,7 +323,6 @@
             border-color: #3B82F6;
         }
 
-        /* Flow label */
         .flow-label {
             position: absolute;
             color: #6B7280;
@@ -420,7 +338,7 @@
 <div class="container">
     <div class="header">
         <h1> Secure DevOps Pipeline</h1>
-        <p>Policy-as-Code Architecture with GitOps</p>
+        <p>Direct Kubernetes Deployment with GitOps</p>
     </div>
 
     <div class="legend">
@@ -449,10 +367,8 @@
     <div class="diagram-container">
         <div class="grid-bg"></div>
 
-        <!-- SVG Arrows -->
         <svg class="arrows" viewBox="0 0 1400 750">
             <defs>
-                <!-- Arrow markers -->
                 <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
                     <path d="M0,0 L0,6 L9,3 z" fill="#3B82F6" />
                 </marker>
@@ -469,7 +385,6 @@
                     <path d="M0,0 L0,6 L9,3 z" fill="#EC4899" />
                 </marker>
 
-                <!-- Glow filters -->
                 <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="3" result="blur" />
                     <feFlood flood-color="#3B82F6" flood-opacity="1" />
@@ -499,60 +414,56 @@
                 </filter>
             </defs>
 
-            <!-- Path definitions for animations -->
             <!-- Developer to GitHub -->
-            <path id="path1" d="M130,150 L250,150" class="arrow-line" stroke="#3B82F6" marker-end="url(#arrow-blue)" />
+            <path d="M130,150 L250,150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow-blue)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#3B82F6" filter="url(#glow-blue)">
                 <animateMotion dur="2s" repeatCount="indefinite" path="M130,150 L250,150" />
             </circle>
 
             <!-- GitHub to Jenkins -->
-            <path id="path2" d="M350,150 L470,150" class="arrow-line" stroke="#3B82F6" marker-end="url(#arrow-blue)" />
+            <path d="M350,150 L470,150" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow-blue)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#3B82F6" filter="url(#glow-blue)">
                 <animateMotion dur="2s" repeatCount="indefinite" begin="0.5s" path="M350,150 L470,150" />
             </circle>
 
             <!-- Jenkins to Security Gate -->
-            <path id="path3" d="M570,150 L570,260" class="arrow-line" stroke="#F97316" marker-end="url(#arrow-orange)" />
+            <path d="M570,150 L570,260" stroke="#F97316" stroke-width="2" marker-end="url(#arrow-orange)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#F97316" filter="url(#glow-orange)">
                 <animateMotion dur="1.5s" repeatCount="indefinite" begin="1s" path="M570,150 L570,260" />
             </circle>
 
             <!-- Security Gate to Docker -->
-            <path id="path4" d="M570,390 L570,470" class="arrow-line" stroke="#3B82F6" marker-end="url(#arrow-blue)" />
+            <path d="M570,390 L570,470" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow-blue)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#3B82F6" filter="url(#glow-blue)">
                 <animateMotion dur="1.5s" repeatCount="indefinite" begin="1.5s" path="M570,390 L570,470" />
             </circle>
 
-            <!-- Docker to ArgoCD -->
-            <path id="path5" d="M670,510 L780,510" class="arrow-line" stroke="#10B981" marker-end="url(#arrow-green)" />
+            <!-- Docker to Helm -->
+            <path d="M670,510 L780,510" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#10B981" filter="url(#glow-green)">
                 <animateMotion dur="2s" repeatCount="indefinite" begin="2s" path="M670,510 L780,510" />
             </circle>
 
-            <!-- ArgoCD to EKS -->
-            <path id="path6" d="M880,480 L1000,400" class="arrow-line" stroke="#10B981" marker-end="url(#arrow-green)" />
+            <!-- Helm to K8s -->
+            <path d="M880,510 L1000,400" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#10B981" filter="url(#glow-green)">
-                <animateMotion dur="2s" repeatCount="indefinite" begin="2.5s" path="M880,480 L1000,400" />
+                <animateMotion dur="2s" repeatCount="indefinite" begin="2.5s" path="M880,510 L1000,400" />
             </circle>
 
             <!-- Vault to Security Gate -->
-            <path id="path7" d="M280,380 L470,320" class="arrow-line" stroke="#FFCF25" marker-end="url(#arrow-yellow)" />
+            <path d="M280,380 L470,320" stroke="#FFCF25" stroke-width="2" marker-end="url(#arrow-yellow)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#FFCF25">
                 <animateMotion dur="2s" repeatCount="indefinite" begin="1s" path="M280,380 L470,320" />
             </circle>
 
             <!-- OPA to Docker -->
-            <path id="path8" d="M280,530 L470,510" class="arrow-line" stroke="#EC4899" marker-end="url(#arrow-pink)" />
+            <path d="M280,530 L470,510" stroke="#EC4899" stroke-width="2" marker-end="url(#arrow-pink)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#EC4899">
                 <animateMotion dur="2s" repeatCount="indefinite" begin="1.5s" path="M280,530 L470,510" />
             </circle>
 
-            <!-- Terraform to AWS -->
-            <path id="path9" d="M130,450 L130,550 L950,550 L950,450" class="arrow-line" stroke="#7B42BC" stroke-dasharray="5,5" />
-
             <!-- Users to LB -->
-            <path id="path10" d="M1100,650 L1100,580" class="arrow-line" stroke="#10B981" marker-end="url(#arrow-green)" />
+            <path d="M1100,650 L1100,580" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-green)" stroke-dasharray="8,4" fill="none" />
             <circle r="6" fill="#10B981" filter="url(#glow-green)">
                 <animateMotion dur="1.5s" repeatCount="indefinite" path="M1100,650 L1100,580" />
             </circle>
@@ -562,9 +473,9 @@
         <div class="flow-label" style="left: 170px; top: 125px;">git push</div>
         <div class="flow-label" style="left: 390px; top: 125px;">webhook</div>
         <div class="flow-label" style="left: 580px; top: 200px;">scan</div>
-        <div class="flow-label" style="left: 580px; top: 430px;">push</div>
-        <div class="flow-label" style="left: 710px; top: 485px;">sync</div>
-        <div class="flow-label" style="left: 930px; top: 420px;">deploy</div>
+        <div class="flow-label" style="left: 580px; top: 430px;">build</div>
+        <div class="flow-label" style="left: 710px; top: 485px;">deploy</div>
+        <div class="flow-label" style="left: 930px; top: 440px;">apply</div>
         <div class="flow-label" style="left: 340px; top: 330px;">secrets</div>
         <div class="flow-label" style="left: 350px; top: 500px;">validate</div>
 
@@ -614,93 +525,62 @@
         <!-- Docker Node -->
         <div class="node" style="left: 520px; top: 470px; width: 100px; border-color: #2496ED;">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
-            <div class="label">Docker Registry</div>
-            <div class="sublabel">Container Images</div>
+            <div class="label">Docker Hub</div>
+            <div class="sublabel">Registry</div>
         </div>
 
-        <!-- ArgoCD Node -->
-        <div class="node" style="left: 780px; top: 470px; width: 90px; border-color: #EF7B4D;">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/argocd/argocd-original.svg" alt="ArgoCD">
-            <div class="label">ArgoCD</div>
-            <div class="sublabel">GitOps</div>
+        <!-- Helm Node -->
+        <div class="node" style="left: 780px; top: 470px; width: 90px; border-color: #0F1689;">
+            <img src="https://helm.sh/img/helm.svg" alt="Helm">
+            <div class="label">Helm</div>
+            <div class="sublabel">Charts</div>
         </div>
 
         <!-- Vault Node -->
         <div class="node" style="left: 180px; top: 340px; width: 90px; border-color: #FFCF25;">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vault/vault-original.svg" alt="Vault">
             <div class="label">Vault</div>
-            <div class="sublabel">Secrets Mgmt</div>
+            <div class="sublabel">Secrets</div>
         </div>
 
         <!-- OPA Node -->
         <div class="node" style="left: 180px; top: 490px; width: 90px; border-color: #566366;">
             <img src="https://www.vectorlogo.zone/logos/openpolicyagent/openpolicyagent-ar21.svg" alt="OPA" style="filter: brightness(0) invert(1);">
             <div class="label">OPA</div>
-            <div class="sublabel">Policy-as-Code</div>
-        </div>
-
-        <!-- Terraform Node -->
-        <div class="node" style="left: 50px; top: 410px; width: 90px; border-color: #7B42BC;">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform">
-            <div class="label">Terraform</div>
-            <div class="sublabel">IaC</div>
+            <div class="sublabel">Policies</div>
         </div>
 
         <!-- Monitoring Stack -->
-        <div class="node" style="left: 50px; top: 560px; width: 110px; height: 100px; border-color: #E6522C;">
+        <div class="node" style="left: 50px; top: 340px; width: 110px; height: 100px; border-color: #E6522C;">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg" alt="Prometheus">
             <div class="label">Monitoring</div>
-            <div class="sublabel">Prometheus + Grafana</div>
-            <div class="sublabel">EFK Stack</div>
+            <div class="sublabel">Prometheus</div>
+            <div class="sublabel">Grafana</div>
         </div>
 
-        <!-- AWS Cloud Region -->
-        <div class="cloud-region" style="left: 920px; top: 80px; width: 450px; height: 520px; border-color: #FF9900; background: rgba(255, 153, 0, 0.03);">
-            <div class="region-label" style="color: #FF9900;">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-plain-wordmark.svg" alt="AWS">
-                AWS Cloud
+        <!-- Kubernetes Cluster -->
+        <div class="k8s-cluster" style="left: 920px; top: 80px; width: 450px; height: 520px; border-color: #326CE5; background: rgba(50, 108, 229, 0.08);">
+            <div class="cluster-label">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="K8s">
+                Kubernetes Cluster
             </div>
 
-            <!-- EKS Cluster -->
-            <div class="eks-cluster" style="left: 20px; top: 60px; width: 410px; height: 350px;">
-                <div class="cluster-label">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="K8s">
-                    EKS Cluster
-                </div>
+            
 
-                <!-- Worker Nodes -->
-                <div class="worker-node" style="left: 30px; top: 60px; width: 120px;">
-                    <div class="node-title">Worker Node 1</div>
-                    <div class="pods">
-                        <div class="pod">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-                        </div>
-                        <div class="pod">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-                        </div>
+            <!-- App Worker Node 1 -->
+            <div class="worker-node" style="left: 170px; top: 60px; width: 120px;">
+                <div class="node-title">App Pod 1</div>
+                <div class="pods">
+                    <div class="pod">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
                     </div>
-                </div>
-
-                <div class="worker-node" style="left: 180px; top: 60px; width: 120px;">
-                    <div class="node-title">Worker Node 2</div>
-                    <div class="pods">
-                        <div class="pod">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-                        </div>
-                        <div class="pod">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Load Balancer -->
-                <div class="node" style="left: 140px; top: 250px; width: 130px; border-color: #10B981; position: absolute;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#10B981">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                    </svg>
-                    <div class="label">Load Balancer</div>
                 </div>
             </div>
+
+           
+
+           
+          
         </div>
 
         <!-- Users -->
@@ -713,15 +593,14 @@
     </div>
 
     <!-- Stage Indicator -->
-    <div class="stage-indicator" id="stageIndicator">
-        <div class="stage active" data-index="0">Code</div>
-        <div class="stage" data-index="1">Build</div>
-        <div class="stage" data-index="2">Scan</div>
-        <div class="stage" data-index="3">Push</div>
-        <div class="stage" data-index="4">Sync</div>
-        <div class="stage" data-index="5">Deploy</div>
-        <div class="stage" data-index="6">Monitor</div>
-        <div class="stage" data-index="7">Serve</div>
+    <div class="stage-indicator">
+        <div class="stage active">Code</div>
+        <div class="stage">Build</div>
+        <div class="stage">Scan</div>
+        <div class="stage">Push</div>
+        <div class="stage">Deploy</div>
+        <div class="stage">Monitor</div>
+        <div class="stage">Serve</div>
     </div>
 
     <!-- Tech Stack -->
@@ -741,16 +620,12 @@
                 <span>Kubernetes</span>
             </div>
             <div class="tech">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform">
-                <span>Terraform</span>
+                <img src="https://helm.sh/img/helm.svg" alt="Helm">
+                <span>Helm</span>
             </div>
             <div class="tech">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vault/vault-original.svg" alt="Vault">
                 <span>Vault</span>
-            </div>
-            <div class="tech">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/argocd/argocd-original.svg" alt="ArgoCD">
-                <span>ArgoCD</span>
             </div>
             <div class="tech">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg" alt="Prometheus">
@@ -761,19 +636,18 @@
                 <span>Grafana</span>
             </div>
             <div class="tech">
-                <img src="https://helm.sh/img/helm.svg" alt="Helm">
-                <span>Helm</span>
-            </div>
-            <div class="tech">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
                 <span>Java/Spring</span>
+            </div>
+            <div class="tech">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL">
+                <span>PostgreSQL</span>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Animate stage indicator
     let currentStage = 0;
     const stages = document.querySelectorAll('.stage');
 
